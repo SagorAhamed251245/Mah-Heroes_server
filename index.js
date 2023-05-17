@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const app = express() ;
+const app = express();
 require('dotenv').config()
-const port = process.env.PORT || 5000 ;
+const port = process.env.PORT || 5000;
 
 // middleware 
 
@@ -12,11 +12,11 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+  res.send('Hello World');
 });
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.ry6i5bk.mongodb.net/?retryWrites=true&w=majority`;
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -35,12 +35,19 @@ async function run() {
     // Send a ping to confirm a successful connection
     // const serviceCollection = client.db('carDoctor').collection('services');
 
-       const productsCollection = client.db('mahHeroes').collection('products');
+    const productsCollection = client.db('mahHeroes').collection('products');
 
-       app.get('/products', async (req, res) => {
-        const products = await productsCollection.find().toArray();
-        res.send(products);
-       })
+    app.get('/products', async (req, res) => {
+      const products = await productsCollection.find().toArray();
+      res.send(products);
+    })
+    app.get('/products/:id', async (req, res) => {
+      const id = req.params.id
+      const product = await productsCollection.findOne({ _id: new ObjectId(id) });
+      res.send(product);
+    })
+
+    
 
 
 
@@ -55,6 +62,6 @@ async function run() {
 run().catch(console.dir);
 
 
-app.listen(port , ()=> {
-    console.log(`Server is running on port ${port}`);
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 })
