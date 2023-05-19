@@ -43,7 +43,7 @@ async function run() {
     })
     app.get('/products/limit', async (req, res)=> {
      
-      const products = await productsCollection.find().limit(20).toArray();
+      const products = await productsCollection.find().limit(20).sort({price: -1}).toArray();
       res.send(products)
 
     })
