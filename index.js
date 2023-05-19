@@ -61,10 +61,29 @@ async function run() {
       res.send(result)
       
     })
+    
 
     app.post('/addProduct', async (req, res) => {
       const body = req.body;
       const result = await productsCollection.insertOne(body)
+      res.send(result)
+      
+    })
+    app.patch('/updateToy/:id', async(req , res)=> {
+      const id = req.params.id ;
+      const filter = {_id: new ObjectId(id)}
+      const option = { upsert: true}
+      const body = req.body
+      const updateToyInfo = {
+        $set: {
+          price: body.price ,
+          available_quantity: body.available_quantity ,
+          description: body.description 
+
+        }
+      }
+
+      const result = await productsCollection.updateOne(filter , updateToyInfo , option)
       res.send(result)
       
     })
@@ -73,6 +92,7 @@ async function run() {
       const result = await productsCollection.deleteOne({_id: new ObjectId(id)})
       res.send(result)
     })
+
 
 
 
