@@ -33,7 +33,7 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
-    
+
 
     const productsCollection = client.db('mahHeroes').collection('products');
 
@@ -41,9 +41,9 @@ async function run() {
       const products = await productsCollection.find().toArray();
       res.send(products);
     })
-    app.get('/products/limit', async (req, res)=> {
-     
-      const products = await productsCollection.find().limit(20).sort({price: -1}).toArray();
+    app.get('/products/limit', async (req, res) => {
+
+      const products = await productsCollection.find().limit(20).sort({ price: -1 }).toArray();
       res.send(products)
 
     })
@@ -55,16 +55,23 @@ async function run() {
       res.send(product);
     })
 
-    app.post('/addProduct', async(req , res )=> {
-          const body = req.body ;
-          const result = await productsCollection.insertOne(body)
-          res.send(result)
-          console.log(body);
+    app.get('/mytoys/:email', async (req, res) => {
+      const myEmail = req.params.email;
+      const result = await productsCollection.find({ seller_email: myEmail }).toArray()
+      res.send(result)
+      
     })
 
-    
+    app.post('/addProduct', async (req, res) => {
+      const body = req.body;
+      const result = await productsCollection.insertOne(body)
+      res.send(result)
+      
+    })
 
-    
+
+
+
 
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
