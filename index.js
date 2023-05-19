@@ -41,11 +41,21 @@ async function run() {
       const products = await productsCollection.find().toArray();
       res.send(products);
     })
+    app.get('/products/limit', async (req, res)=> {
+     
+      const products = await productsCollection.find().limit(20).toArray();
+      res.send(products)
+
+    })
+
+
     app.get('/products/:id', async (req, res) => {
       const id = req.params.id
       const product = await productsCollection.findOne({ _id: new ObjectId(id) });
       res.send(product);
     })
+
+    
 
     
 
