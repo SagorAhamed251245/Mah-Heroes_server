@@ -91,28 +91,16 @@ async function run() {
       console.log(typeof sorting, sorting);
 
 
-      /* console.log(sorting);
       
-      if(sorting==true){
-       const result = await productsCollection.find({ seller_email: myEmail }).sort({price: -1}).toArray()
-       res.send(result)
-      }
-      else{
-       const result = await productsCollection.find({ seller_email: myEmail }).sort({ price: 1 }).toArray()
-       
-       res.send(result)
-      } */
 
       try {
         let result;
         result = await productsCollection
           .find({ seller_email: myEmail })
-          .sort({ price: sorting === 'true' ? -1 : 1 })
+          .sort({ price: sorting === 'true' ? -1 : 1 }).collation({locale: "en_US" , numericOrdering: true})
           .toArray()
 
 
-
-        // Convert the price field to a number
         result.forEach((toy) => {
           toy.price = parseInt(toy.price)
           console.log(toy.price);;
