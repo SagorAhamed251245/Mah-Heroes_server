@@ -25,7 +25,10 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
+  useNewUrlParser : true ,
+  useUnifiedTopology : true , 
+  maxPoolSize : 10
 });
 
 async function run() {
@@ -33,9 +36,15 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
     // Send a ping to confirm a successful connection
-
+      client.connect((err) => {
+        if (err){
+          console.error(err);
+          return
+        }
+      });
 
     const productsCollection = client.db('mahHeroes').collection('products');
+    const galleryCollection = client.db('mahHeroes').collection('galleryPhotos');
 
     const indexKeys = { toy_name: 1 };
     const indexOptions = { name: "toyName" };
@@ -50,9 +59,14 @@ async function run() {
    
 
     app.get('/products', async (req, res) => {
-      console.log(req.body);
+      
       const products = await productsCollection.find().toArray();
       res.send(products);
+    })
+    app.get('/galleryPhotos' , async (req , res)=> {
+          const result = await galleryCollection.find().toArray()
+          
+          res.send(result)
     })
 
     app.get("/getToyByName/:text", async (req, res) => {
